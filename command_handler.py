@@ -33,7 +33,7 @@ async def handle_message(message: discord.Message):
             elif command == 'food':
                 out_message = "http://www.food.uci.edu/dining.php"
             elif command == 'help':
-                out_message = "```Available commands are: ```" + "\n" + "`z!calendar`, `z!clubs`, `z!fact`, `z!find`, `z!food`, `z!help`, `z!housing`, `z!meme`, `z!portal`, `z!planner`, `z!playing`, `z!report`, `z!services`, `z!shuttle`, `z!zot`" + "\n\n" + "```Type \"z!help [command]\" for more info regarding a command. (e.g. \"z!help fact\")" + "\n" + "I was made by Apple 🍏#4472, please contact him if you have any suggestions or issues! v" + head.version + "```"
+                out_message = "```Available commands are: ```" + "\n" + "`z!calendar`, `z!clubs`, `z!fact`, `z!find`, `z!food`, `z!help`, `z!housing`, `z!meme`, `z!portal`, `z!planner`, `z!playing`, `z!report`, `z!services`, `z!shuttle`, `z!zot`" + "\n\n" + "```Type \"z!help [command]\" for more info regarding a command. (e.g. \"z!help fact\")" + "\n" + "I was made by Apple 🍏#4472, please contact him if you have any suggestions or issues! v" + head.version + "```\nGitHub: https://github.com/greenlittleapple/ZotBotPython"
             elif command == 'help calendar':
                 out_message = "`z!calendar: Provides a link to the UCI Academic Calendar.`"
             elif command == 'help clubs':
@@ -146,7 +146,8 @@ async def check_playing(message: discord.Message):
 async def warn(message: discord.Message, automod: bool = False):
     msg = message.content.rstrip()[7:]
     reason = "Breaking a server rule" if msg[len(msg.split(" ")[0])] == '' else msg[len(msg.split(" ")[0])]
-    target = message.mentions[0] if len(message.mentions) > 0 else botutils.find_user(msg.split(" ")[0], message.server)  # type: discord.Member
+    target = message.mentions[0] if len(message.mentions) > 0 else botutils.find_user(msg.split(" ")[0],
+                                                                                      message.server)  # type: discord.Member
     moderator = message.author  # type: discord.Member
     if target is not None:
         if botutils.get_role_by_id("350330574134706176", message.server) not in target.roles:
@@ -180,6 +181,7 @@ async def warn(message: discord.Message, automod: bool = False):
         out_message = "ERROR: Please input a user to warn."
     await head.client.send_message(message.channel, content=out_message)
 
+
 async def unwarn(message: discord.Message):
     msg = message.content[9:]
     target = message.mentions[0] if len(message.mentions) > 0 else botutils.find_user(msg, message.server)
@@ -193,23 +195,27 @@ async def unwarn(message: discord.Message):
         out_message = "ERROR: Please input a user to unwarn."
     await head.client.send_message(message.channel, out_message)
 
+
 async def report(message: discord.Message):
-    msg = message.content[9:] # type: str
-    author = message.author # type: discord.Member
+    msg = message.content[9:]  # type: str
+    author = message.author  # type: discord.Member
     user_search = msg.split(" ")[0]
-    target = botutils.find_user(user_search, message.server) if user_search != '' else None # type: discord.Member
+    target = botutils.find_user(user_search, message.server) if user_search != '' else None  # type: discord.Member
     if target is not None:
         reason = msg[len(user_search) + 1:]
         if reason == '':
-            await head.client.send_message(author, content="ERROR: Please give a reason in your report! (Ex: z!report [user] [reason])")
+            await head.client.send_message(author,
+                                           content="ERROR: Please give a reason in your report! (Ex: z!report [user] [reason])")
         else:
             embed = discord.Embed(title="Report Submitted", color=discord.Color.red())
             embed.add_field(name="Reporter", value=author.name + "#" + str(author.discriminator), inline=False)
             embed.add_field(name="User", value=target.name + "#" + str(target.discriminator), inline=False)
             embed.add_field(name="Reason", value=reason, inline=False)
-            await head.client.send_message(botutils.get_chan_by_id("342545356531302413"), content="<@&342539333015699457>")
+            await head.client.send_message(botutils.get_chan_by_id("342545356531302413"),
+                                           content="<@&342539333015699457>")
             await head.client.send_message(botutils.get_chan_by_id("342545356531302413"), embed=embed)
-            await head.client.send_message(author, content="Report successfully submitted for user " + target.display_name + "#" + target.discriminator + ", thank you for your help!")
+            await head.client.send_message(author,
+                                           content="Report successfully submitted for user " + target.display_name + "#" + target.discriminator + ", thank you for your help!")
     else:
         await head.client.send_message(author, "ERROR: Please input a person to report! (Ex: z!report [user] [reason])")
     await head.client.delete_message(message)

@@ -143,7 +143,7 @@ async def check_playing(message: discord.Message):
                                                                                len(players)), description=player_list))
 
 
-async def warn(message: discord.Message, automod: bool = False):
+async def warn(message: discord.Message):
     msg = message.content.rstrip()[7:]
     reason = "Breaking a server rule" if msg[len(msg.split(" ")[0])] == '' else msg[len(msg.split(" ")[0])]
     target = message.mentions[0] if len(message.mentions) > 0 else botutils.find_user(msg.split(" ")[0],

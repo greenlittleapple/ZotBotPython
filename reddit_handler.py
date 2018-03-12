@@ -32,7 +32,7 @@ async def retrieve_and_post_UCI():
                     title=submission.title[:130] + ('...' if submission.title[:130] != submission.title else ''),
                     color=discord.Color.blue(),
                     description='/u/' + str(submission.author) + ' - *' + ctime(
-                        submission.created_utc) + '*\n' + submission.shortlink)
+                        submission.created_utc - 3 * 3600) + '*\n' + submission.shortlink)
                 if submission.url.endswith(tuple(['jpg', 'gif', 'png', 'jpeg', 'tiff', 'bmp', 'mp4'])):
                     # print('Set Image: ' + submission.url)
                     embed = embed.set_image(url=submission.url)

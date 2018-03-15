@@ -65,9 +65,9 @@ async def retrieve_and_post_UCI():
                 embed.add_field(name='Topics', value=' '.join([('**「' + x + '」**') for x in categories]), inline=False)
                 try:
                     await head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed)
-                    botutils.logfile.write('Submission Posted: ' + submission.title)
+                    print('Submission Posted: ' + submission.title)
                 except discord.errors.HTTPException as e:
-                    botutils.logfile.write(str(e) + '\n' + 'Error in Submission: ' + submission.title)
+                    print(str(e) + '\n' + 'Error in Submission: ' + submission.title)
                 finally:
                     with open('uci_posts.txt', 'a') as file:
                         file.write(submission.id + "\n")

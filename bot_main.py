@@ -3,6 +3,7 @@
 import discord
 import head
 import command_handler
+import botutils
 
 if __name__ == '__main__':
 

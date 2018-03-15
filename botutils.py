@@ -1,9 +1,5 @@
 import discord
 import head
-import atexit
-
-logfile = open('zotbot_log.txt', 'a+')
-atexit.register(logfile.close)
 
 
 def is_mod(user: discord.Member) -> bool:

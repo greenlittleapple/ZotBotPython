@@ -1,5 +1,12 @@
 import discord
 import head
+import datetime
+
+logfile = open('zotbot_log.txt', 'a+')
+
+
+def time_now() -> str:
+    return str(datetime.datetime.now())
 
 
 def is_mod(user: discord.Member) -> bool:

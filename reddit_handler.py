@@ -12,7 +12,7 @@ client = praw.Reddit(client_id=head.reddit_client_id,
                      password=head.reddit_pw,
                      user_agent='ZotBot by greenlittleapple')
 
-print('Reddit logged on: ' + str(client.user.me()))
+botutils.logfile.write(botutils.time_now() + ' - ' + 'Reddit logged on: ' + str(client.user.me()) + '\n')
 
 uci_sub = client.subreddit('UCI')
 meme_subs = client.subreddit('ProgrammerHumor+dankmemes+wholesomememes')
@@ -65,13 +65,15 @@ async def retrieve_and_post_UCI():
                 embed.add_field(name='Topics', value=' '.join([('**「' + x + '」**') for x in categories]), inline=False)
                 try:
                     await head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed)
-                    print('Submission Posted: ' + submission.title)
+                    botutils.logfile.write(botutils.time_now() + ' - ' + 'Submission Posted: ' + submission.title + '\n')
+                    botutils.logfile.flush()
                 except discord.errors.HTTPException as e:
-                    print(str(e) + '\n' + 'Error in Submission: ' + submission.title)
+                    botutils.logfile.write(botutils.time_now() + ' - ' + str(e) + '\n' + 'Error in Submission: ' + submission.title + '\n')
+                    botutils.logfile.flush()
                 finally:
                     with open('uci_posts.txt', 'a') as file:
                         file.write(submission.id + "\n")
-            file.close()
+        file.close()
         await asyncio.sleep(60)
     uci_running = False
 

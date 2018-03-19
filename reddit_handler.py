@@ -25,7 +25,7 @@ async def retrieve_and_post_UCI():
     while not head.client.is_closed and uci_enabled:
         global uci_running
         uci_running = True
-        for submission in sorted(uci_sub.new(limit=10), key=lambda x: x.created_utc):
+        for submission in sorted(uci_sub.new(limit=20), key=lambda x: x.created_utc):
             file = open('uci_posts.txt', 'r+')
             if not str(submission.id + "\n") in file.readlines():
                 embed = discord.Embed(
@@ -74,8 +74,13 @@ async def retrieve_and_post_UCI():
                     with open('uci_posts.txt', 'a') as file:
                         file.write(submission.id + "\n")
         file.close()
+        uci_running = False
         await asyncio.sleep(60)
     uci_running = False
+    botutils.logfile.write(botutils.time_now() + ' - ' + 'client closed: ' + head.client.is_closed + ', uci_enabled: ' + uci_enabled)
+    botutils.logfile.flush()
+    if head.client.is_closed:
+        head.client.run(head.token)
 
 
 def start_retrieve_UCI(start: bool):

@@ -12,7 +12,7 @@ client = praw.Reddit(client_id=head.reddit_client_id,
                      password=head.reddit_pw,
                      user_agent='ZotBot by greenlittleapple')
 
-botutils.logfile.write(botutils.time_now() + ' - ' + 'Reddit logged on: ' + str(client.user.me()) + '\n')
+botutils.write_to_log('Reddit logged on: ' + str(client.user.me()))
 
 uci_sub = client.subreddit('UCI')
 meme_subs = client.subreddit('ProgrammerHumor+dankmemes+wholesomememes')
@@ -25,9 +25,12 @@ async def retrieve_and_post_UCI():
     while not head.client.is_closed and uci_enabled:
         global uci_running
         uci_running = True
-        for submission in sorted(uci_sub.new(limit=20), key=lambda x: x.created_utc):
+        botutils.write_to_log('Checking for new posts...')
+        count = 0
+        for submission in sorted(uci_sub.new(limit=5), key=lambda x: x.created_utc):
             file = open('uci_posts.txt', 'r+')
             if not str(submission.id + "\n") in file.readlines():
+                count += 1
                 embed = discord.Embed(
                     title=submission.title[:130] + ('...' if submission.title[:130] != submission.title else ''),
                     color=discord.Color.blue(),
@@ -65,20 +68,19 @@ async def retrieve_and_post_UCI():
                 embed.add_field(name='Topics', value=' '.join([('**「' + x + '」**') for x in categories]), inline=False)
                 try:
                     await head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed)
-                    botutils.logfile.write(botutils.time_now() + ' - ' + 'Submission Posted: ' + submission.title + '\n')
-                    botutils.logfile.flush()
-                except discord.errors.HTTPException as e:
-                    botutils.logfile.write(botutils.time_now() + ' - ' + str(e) + '\n' + 'Error in Submission: ' + submission.title + '\n')
-                    botutils.logfile.flush()
+                    botutils.write_to_log('Submission Posted: ' + submission.title)
+                except Exception as e:
+                    botutils.write_to_log('ERROR: ' + str(e) + '\n' + 'Error in Submission: ' + submission.title)
                 finally:
-                    with open('uci_posts.txt', 'a') as file:
-                        file.write(submission.id + "\n")
+                    with open('uci_posts.txt', 'a') as write_file:
+                        write_file.write(submission.id + "\n")
+                        write_file.flush()
         file.close()
         uci_running = False
+        botutils.write_to_log('Posted ' + str(count) + ' posts')
         await asyncio.sleep(60)
     uci_running = False
-    botutils.logfile.write(botutils.time_now() + ' - ' + 'client closed: ' + head.client.is_closed + ', uci_enabled: ' + uci_enabled)
-    botutils.logfile.flush()
+    botutils.write_to_log('client closed: ' + head.client.is_closed + ', uci_enabled: ' + uci_enabled)
     if head.client.is_closed:
         head.client.run(head.token)
 

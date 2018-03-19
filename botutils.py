@@ -9,6 +9,11 @@ def time_now() -> str:
     return str(datetime.datetime.now())
 
 
+def write_to_log(data: str):
+    logfile.write(time_now() + ' - ' + data + '\n')
+    logfile.flush()
+
+
 def is_mod(user: discord.Member) -> bool:
     return user.server_permissions.administrator
 

@@ -9,8 +9,7 @@ if __name__ == '__main__':
 
     @head.client.event
     async def on_ready():
-        botutils.logfile.write(botutils.time_now() + ' - ' + 'Logged in to Discord\n')
-        botutils.logfile.flush()
+        botutils.write_to_log('Logged in to Discord')
         print('Logged in as')
         print(head.client.user.name)
         print(head.client.user.id)

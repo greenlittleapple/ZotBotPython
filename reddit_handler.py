@@ -70,7 +70,7 @@ async def retrieve_and_post_UCI():
                 embed.add_field(name='Topics', value=' '.join([('**「' + x + '」**') for x in categories]), inline=False)
                 try:
                     botutils.write_to_log('Trying to post...')
-                    await head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed)
+                    asyncio.ensure_future(head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed))
                     botutils.write_to_log('Submission Posted: ' + submission.title)
                 except Exception as e:
                     botutils.write_to_log('ERROR: ' + str(e) + '\n' + 'Error in Submission: ' + submission.title)

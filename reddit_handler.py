@@ -26,11 +26,13 @@ async def retrieve_and_post_UCI():
         global uci_running
         uci_running = True
         botutils.write_to_log('Checking for new posts...')
-        count = 0
+        processed = 0
         for submission in sorted(uci_sub.new(limit=5), key=lambda x: x.created_utc):
+            processed += 1
+            if processed == 50:  # Stop giant for loop, for some reason it gets stuck?
+                break
             file = open('uci_posts.txt', 'r+')
             if not str(submission.id + "\n") in file.readlines():
-                count += 1
                 embed = discord.Embed(
                     title=submission.title[:130] + ('...' if submission.title[:130] != submission.title else ''),
                     color=discord.Color.blue(),
@@ -67,6 +69,7 @@ async def retrieve_and_post_UCI():
                     categories.add('General')
                 embed.add_field(name='Topics', value=' '.join([('**「' + x + '」**') for x in categories]), inline=False)
                 try:
+                    botutils.write_to_log('Trying to post...')
                     await head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed)
                     botutils.write_to_log('Submission Posted: ' + submission.title)
                 except Exception as e:
@@ -77,7 +80,6 @@ async def retrieve_and_post_UCI():
                         write_file.flush()
         file.close()
         uci_running = False
-        botutils.write_to_log('Posted ' + str(count) + ' posts')
         await asyncio.sleep(60)
     uci_running = False
     botutils.write_to_log('client closed: ' + head.client.is_closed + ', uci_enabled: ' + uci_enabled)

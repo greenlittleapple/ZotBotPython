@@ -70,7 +70,7 @@ async def retrieve_and_post_UCI():
                 embed.add_field(name='Topics', value=' '.join([('**「' + x + '」**') for x in categories]), inline=False)
                 try:
                     botutils.write_to_log('Trying to post...')
-                    asyncio.ensure_future(head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed))
+                    await asyncio.wait_for(head.client.send_message(botutils.get_chan_by_id("421828948159365120"), embed=embed), timeout=5)
                     botutils.write_to_log('Submission Posted: ' + submission.title)
                 except Exception as e:
                     botutils.write_to_log('ERROR: ' + str(e) + '\n' + 'Error in Submission: ' + submission.title)
@@ -82,9 +82,6 @@ async def retrieve_and_post_UCI():
         uci_running = False
         await asyncio.sleep(60)
     uci_running = False
-    botutils.write_to_log('client closed: ' + head.client.is_closed + ', uci_enabled: ' + uci_enabled)
-    if head.client.is_closed:
-        head.client.run(head.token)
 
 
 def start_retrieve_UCI(start: bool):

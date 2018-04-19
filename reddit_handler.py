@@ -27,7 +27,7 @@ async def retrieve_and_post_UCI():
         uci_running = True
         botutils.write_to_log('Checking for new posts...')
         processed = 0
-        for submission in sorted(uci_sub.new(limit=5), key=lambda x: x.created_utc):
+        for submission in sorted(uci_sub.new(limit=20), key=lambda x: x.created_utc):
             processed += 1
             if processed == 50:  # Stop giant for loop, for some reason it gets stuck?
                 break

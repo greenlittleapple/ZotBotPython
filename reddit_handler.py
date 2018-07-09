@@ -26,7 +26,7 @@ async def retrieve_and_post_UCI():
         global uci_running
         uci_running = True
         botutils.write_to_log('Checking for new posts...')
-        for submission in sorted(uci_sub.new(limit=20), key=lambda x: x.created_utc):
+        for submission in sorted(uci_sub.new(limit=10), key=lambda x: x.created_utc):
             file = open('uci_posts.txt', 'r+')
             if not str(submission.id + "\n") in file.readlines():
                 embed = discord.Embed(
@@ -88,4 +88,9 @@ def start_retrieve_UCI(start: bool):
         uci_enabled = False
 
 
-start_retrieve_UCI(True)
+# async def random_meme(channel: discord.Channel):
+#     top = list(meme_subs.top('month'))
+#     await head.client.send_file(channel, fp=)
+
+if __name__ == '__main__':
+    start_retrieve_UCI(True)

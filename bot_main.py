@@ -4,6 +4,7 @@ import discord
 import head
 import command_handler
 import botutils
+import reddit_handler
 
 if __name__ == '__main__':
 
@@ -14,6 +15,7 @@ if __name__ == '__main__':
         print(head.client.user.name)
         print(head.client.user.id)
         print('------')
+        reddit_handler.start_retrieve_UCI(True)
 
     @head.client.event
     async def on_message(message: discord.Message):

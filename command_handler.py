@@ -5,9 +5,17 @@ import discord
 import head
 import botutils
 import facts
-import reddit_handler
+import re
 
 noPerm = "ERROR: You do not have permission to use this command."
+emotes = {'kappa': 'kappa',
+          'babyrage': 'babyrage',
+          'feelsbadman': 'feels *bad',
+          'dansgame': 'dansgame',
+          'residentsleeper': 'residentsleeper',
+          'keepo': 'keepo',
+          'gachigasm': 'gachigasm',
+          'poggers': 'poggers'}
 
 
 async def handle_message(message: discord.Message):
@@ -103,6 +111,10 @@ async def handle_message(message: discord.Message):
                     out_message = "ERROR: Could not find user."
             if out_message != '':
                 await client.send_message(message.channel, content=out_message)
+        for emote in emotes:
+            if re.search(emotes.get(emote), lower_case_message):
+                await head.client.send_file(message.channel, "emotes/" + emote + ".png")
+                break
 
 
 async def check_playing(message: discord.Message):

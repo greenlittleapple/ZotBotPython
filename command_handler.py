@@ -117,7 +117,7 @@ async def handle_message(message: discord.Message):
             if out_message != '':
                 await client.send_message(message.channel, content=out_message)
         for emote in emotes:
-            if re.search(emotes.get(emote), lower_case_message):
+            if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', lower_case_message):
                 await head.client.send_file(message.channel, "emotes/" + emote + ".png")
                 break
 

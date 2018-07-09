@@ -8,15 +8,19 @@ import facts
 import re
 
 noPerm = "ERROR: You do not have permission to use this command."
-emotes = {'kappa': 'kappa',
-          'babyrage': 'babyrage',
-          'feelsbadman': 'feels *bad',
-          'feelsgoodman': 'feels *good',
-          'dansgame': 'dansgame',
-          'residentsleeper': 'residentsleeper',
-          'keepo': 'keepo',
-          'gachigasm': 'gachigasm',
-          'poggers': 'poggers'}
+emotes = {
+    'kappa': 'kappa',
+    'babyrage': 'babyrage',
+    'dansgame': 'dansgame',
+    'feelsbadman': 'feels *bad',
+    'feelsgoodman': 'feels *good',
+    'gachigasm': 'gachigasm',
+    'keepo': 'keepo',
+    'monkas': 'monkas',
+    'pogchamp': 'pogchamp',
+    'poggers': 'poggers',
+    'residentsleeper': 'residentsleeper',
+}
 
 
 async def handle_message(message: discord.Message):

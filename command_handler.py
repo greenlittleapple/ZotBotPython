@@ -11,6 +11,7 @@ noPerm = "ERROR: You do not have permission to use this command."
 emotes = {'kappa': 'kappa',
           'babyrage': 'babyrage',
           'feelsbadman': 'feels *bad',
+          'feelsgoodman': 'feels *good',
           'dansgame': 'dansgame',
           'residentsleeper': 'residentsleeper',
           'keepo': 'keepo',

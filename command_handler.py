@@ -7,6 +7,7 @@ import botutils
 import facts
 import re
 import time
+import os, random
 
 noPerm = "ERROR: You do not have permission to use this command."
 emotes = {
@@ -23,23 +24,28 @@ emotes = {
     'residentsleeper': 'residentsleeper',
 }
 last_emote_time = time.time()
+emote_cooldown = 300
+last_command_time = time.time()
+command_cooldown = 5
 
 
 async def handle_message(message: discord.Message):
     client = head.client
     lower_case_message = message.content.lower()
-    print(message.author.id)
     if not message.author.bot and message.author.id != "114858490555531268":
         if lower_case_message.startswith('zot zot zot'):
-            await client.send_message(message.channel, content='ZOT ZOT ZOT!')
+            global last_command_time
+            if time.time() - last_command_time >= command_cooldown:
+                last_command_time = time.time()
+                await client.send_message(message.channel, content='ZOT ZOT ZOT!')
         elif lower_case_message.startswith('z!'):
             command = lower_case_message[2:].rstrip()  # type: str
             out_message = ''
 
             if command == 'apple':
                 out_message = "Why are you typing a command that doesn't exist? Shame on you."
-            elif command == 'bustazot':
-                client.send_file(message.channel, "", content="MAP OF RESTROOMS AT UCI"),
+            #elif command == 'bustazot':
+            #    client.send_file(message.channel, "", content="MAP OF RESTROOMS AT UCI"),
             elif command == 'calendar':
                 out_message = "https://www.reg.uci.edu/calendars/quarterly/2017-2018/quarterly17-18.html"
             elif command == 'clubs':
@@ -49,7 +55,7 @@ async def handle_message(message: discord.Message):
             elif command == 'food':
                 out_message = "http://www.food.uci.edu/dining.php"
             elif command == 'help':
-                out_message = "```Available commands are: ```" + "\n" + "`z!calendar`, `z!clubs`, `z!fact`, `z!find`, `z!food`, `z!help`, `z!housing`, `z!meme`, `z!portal`, `z!planner`, `z!playing`, `z!report`, `z!services`, `z!shuttle`, `z!zot`" + "\n\n" + "```Type \"z!help [command]\" for more info regarding a command. (e.g. \"z!help fact\")" + "\n" + "I was made by Apple 🍏#4472, please contact him if you have any suggestions or issues! v" + head.version + "```\nGitHub: https://github.com/greenlittleapple/ZotBotPython"
+                out_message = "```Available commands are: ```" + "\n" + "`z!calendar`, `z!clubs`, `z!fact`, `z!find`, `z!food`, `z!help`, `z!housing`, `z!portal`, `z!planner`, `z!playing`, `z!report`, `z!services`, `z!shuttle`, `z!zot`" + "\n\n" + "```Type \"z!help [command]\" for more info regarding a command. (e.g. \"z!help fact\")" + "\n" + "I was made by Apple 🍏#4472, please contact him if you have any suggestions or issues! v" + head.version + "```\nGitHub: https://github.com/greenlittleapple/ZotBotPython"
             elif command == 'help calendar':
                 out_message = "`z!calendar: Provides a link to the UCI Academic Calendar.`"
             elif command == 'help clubs':
@@ -85,7 +91,7 @@ async def handle_message(message: discord.Message):
             elif command == 'housing':
                 out_message = "https://www.housing.uci.edu/"
             elif command == 'meme':
-                pass
+                out_message = "meme machine brok"
             elif command == 'planner':
                 out_message = "https://courseeater.com/"
             elif command == 'portal':
@@ -93,7 +99,12 @@ async def handle_message(message: discord.Message):
             elif command == 'services':
                 out_message = "https://www.admissions.uci.edu/discover/student-life/services.php"
             elif command == 'sushi':
-                out_message = "╮(╯▽╰)╭"
+                global last_command_time
+                if time.time() - last_command_time >= command_cooldown:
+                    last_command_time = time.time()
+                    await client.send_file(message.channel, fp="sushi/" + random.choice(os.listdir("sushi")))
+                else:
+                    out_message = "COOLDOWN: Stop spamming commands"
             elif command == 'zot':
                 out_message = "ZOT ZOT ZOT!"
 
@@ -119,11 +130,11 @@ async def handle_message(message: discord.Message):
                     out_message = "ERROR: Could not find user."
             if out_message != '':
                 await client.send_message(message.channel, content=out_message)
-        if time.time() - last_emote_time >= 60:
+        global last_emote_time
+        if time.time() - last_emote_time >= emote_cooldown:
             for emote in emotes:
                 if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', lower_case_message):
                     await head.client.send_file(message.channel, "emotes/" + emote + ".png")
-                    global last_emote_time
                     last_emote_time = time.time()
                     break
 

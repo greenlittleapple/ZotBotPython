@@ -26,7 +26,7 @@ emotes = {
 async def handle_message(message: discord.Message):
     client = head.client
     lower_case_message = message.content.lower()
-    if not message.author.bot:
+    if not message.author.bot and message.author.id != 114858490555531268:
         if lower_case_message.startswith('zot zot zot'):
             await client.send_message(message.channel, content='ZOT ZOT ZOT!')
         elif lower_case_message.startswith('z!'):

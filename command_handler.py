@@ -6,6 +6,7 @@ import head
 import botutils
 import facts
 import re
+import time
 
 noPerm = "ERROR: You do not have permission to use this command."
 emotes = {
@@ -21,12 +22,14 @@ emotes = {
     'poggers': 'poggers',
     'residentsleeper': 'residentsleeper',
 }
+last_emote_time = time.time()
 
 
 async def handle_message(message: discord.Message):
     client = head.client
     lower_case_message = message.content.lower()
-    if not message.author.bot and message.author.id != 114858490555531268:
+    print(message.author.id)
+    if not message.author.bot and message.author.id != "114858490555531268":
         if lower_case_message.startswith('zot zot zot'):
             await client.send_message(message.channel, content='ZOT ZOT ZOT!')
         elif lower_case_message.startswith('z!'):
@@ -116,10 +119,13 @@ async def handle_message(message: discord.Message):
                     out_message = "ERROR: Could not find user."
             if out_message != '':
                 await client.send_message(message.channel, content=out_message)
-        for emote in emotes:
-            if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', lower_case_message):
-                await head.client.send_file(message.channel, "emotes/" + emote + ".png")
-                break
+        if time.time() - last_emote_time >= 60:
+            for emote in emotes:
+                if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', lower_case_message):
+                    await head.client.send_file(message.channel, "emotes/" + emote + ".png")
+                    global last_emote_time
+                    last_emote_time = time.time()
+                    break
 
 
 async def check_playing(message: discord.Message):

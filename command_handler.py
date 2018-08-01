@@ -8,6 +8,7 @@ import facts
 import re
 import time
 import os, random
+import pickle
 
 noPerm = "ERROR: You do not have permission to use this command."
 emotes = {
@@ -24,7 +25,7 @@ emotes = {
     'residentsleeper': 'residentsleeper',
 }
 last_emote_time = time.time()
-emote_cooldown = 300
+emote_cooldown = 0
 last_command_time = time.time()
 command_cooldown = 5
 
@@ -32,7 +33,7 @@ command_cooldown = 5
 async def handle_message(message: discord.Message):
     client = head.client
     lower_case_message = message.content.lower()
-    if not message.author.bot and message.author.id != "114858490555531268":
+    if not message.author.bot and message.author.id != "114858490555531268":  # For the special child
         if lower_case_message.startswith('zot zot zot'):
             global last_command_time
             if time.time() - last_command_time >= command_cooldown:
@@ -44,7 +45,7 @@ async def handle_message(message: discord.Message):
 
             if command == 'apple':
                 out_message = "Why are you typing a command that doesn't exist? Shame on you."
-            #elif command == 'bustazot':
+            # elif command == 'bustazot':
             #    client.send_file(message.channel, "", content="MAP OF RESTROOMS AT UCI"),
             elif command == 'calendar':
                 out_message = "https://www.reg.uci.edu/calendars/quarterly/2017-2018/quarterly17-18.html"
@@ -132,9 +133,13 @@ async def handle_message(message: discord.Message):
                 await client.send_message(message.channel, content=out_message)
         global last_emote_time
         if time.time() - last_emote_time >= emote_cooldown:
-            for emote in emotes:
-                if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', lower_case_message):
-                    await head.client.send_file(message.channel, "emotes/" + emote + ".png")
+            for emote in emotes:  # type: str
+                # Only activate if last word in sentence is emote
+                if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', str.split(lower_case_message)[-1]):
+                    try:
+                        await head.client.add_reaction(message, discord.utils.get(head.client.get_all_emojis(), name=emote))
+                    finally:
+                        pass
                     last_emote_time = time.time()
                     break
 

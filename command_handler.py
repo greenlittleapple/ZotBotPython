@@ -15,11 +15,10 @@ emotes = {
     'kappa': 'kappa',
     'babyrage': 'babyrage',
     'dansgame': 'dansgame',
-    'feelsbadman': 'feels *bad',
     'feelsgoodman': 'feels *good',
     'gachigasm': 'gachigasm',
     'keepo': 'keepo',
-    'monkas': 'monkas',
+    'monkaS': 'monkas|feels *bad',
     'pogchamp': 'pogchamp',
     'poggers': 'poggers',
     'residentsleeper': 'residentsleeper',
@@ -134,14 +133,12 @@ async def handle_message(message: discord.Message):
         global last_emote_time
         if time.time() - last_emote_time >= emote_cooldown:
             for emote in emotes:  # type: str
-                # Only activate if last word in sentence is emote
-                if re.search('(?<!:)' + emotes.get(emote) + '(?!:)', str.split(lower_case_message)[-1]):
+                if re.search('(?<!:)' + emotes.get(emote).lower() + '(?!:)', lower_case_message):
                     try:
                         await head.client.add_reaction(message, discord.utils.get(head.client.get_all_emojis(), name=emote))
                     finally:
                         pass
                     last_emote_time = time.time()
-                    break
 
 
 async def check_playing(message: discord.Message):

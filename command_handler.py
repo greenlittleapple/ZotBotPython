@@ -19,7 +19,7 @@ emotes = {
     'feelsgoodman': 'feels *good',
     'gachigasm': 'gachigasm',
     'keepo': 'keepo',
-    'monkaS': 'monkas',
+    'peterS': 'monkas',
     'pogchamp': 'pogchamp',
     'poggers': 'poggers',
     'residentsleeper': 'residentsleeper',
@@ -134,7 +134,7 @@ async def handle_message(message: discord.Message):
         global last_emote_time
         if time.time() - last_emote_time >= emote_cooldown:
             for emote in emotes:  # type: str
-                if re.search('(?<!:)' + emotes.get(emote).lower() + '(?!:)', lower_case_message):
+                if re.search('(?<!:)' + emotes.get(emote).lower() + '(?!:)', lower_case_message) and not re.search(':.*:', lower_case_message):
                     try:
                         await head.client.add_reaction(message, discord.utils.get(head.client.get_all_emojis(), name=emote))
                     finally:

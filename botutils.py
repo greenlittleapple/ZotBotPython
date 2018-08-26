@@ -19,19 +19,19 @@ def is_mod(user: discord.Member) -> bool:
 
 
 # noinspection PyPep8Naming
-def get_UCI() -> discord.Server:
+def get_UCI() -> discord.Guild:
     return head.client.get_server('341464294132678668')
 
 
-def get_role_by_id(id: str, server: discord.Server) -> discord.Role:
+def get_role_by_id(id: str, server: discord.Guild) -> discord.Role:
     return discord.utils.get(server.roles, id=id)
 
 
-def get_chan_by_id(id: str) -> discord.Channel:
+def get_chan_by_id(id: str) -> discord.channel:
     return head.client.get_channel(id=id)
 
 
-def find_user(term: str, server: discord.Server) -> discord.User or None:
+def find_user(term: str, server: discord.Guild) -> discord.User or None:
     users = get_UCI().members
     for i in range(7):
         for x in users:
@@ -49,7 +49,7 @@ def find_user(term: str, server: discord.Server) -> discord.User or None:
     return None
 
 
-def check_match(server: discord.Server,
+def check_match(server: discord.Guild,
                 search: str,
                 user: discord.User,
                 username_match: bool, nickname_match: bool,

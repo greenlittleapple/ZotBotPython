@@ -31,11 +31,11 @@ command_cooldown = 5
 
 
 async def handle_message(message: discord.Message):
+    global last_command_time
     client = head.client
     lower_case_message = message.content.lower()
     if not message.author.bot and message.author.id != "114858490555531268":  # For the special child
         if lower_case_message.startswith('zot zot zot'):
-            global last_command_time
             if time.time() - last_command_time >= command_cooldown:
                 last_command_time = time.time()
                 await client.send_message(message.channel, content='ZOT ZOT ZOT!')
@@ -100,7 +100,6 @@ async def handle_message(message: discord.Message):
             elif command == 'services':
                 out_message = "https://www.admissions.uci.edu/discover/student-life/services.php"
             elif command == 'sushi':
-                global last_command_time
                 if time.time() - last_command_time >= command_cooldown:
                     last_command_time = time.time()
                     await client.send_file(message.channel, fp="sushi/" + random.choice(os.listdir("sushi")))

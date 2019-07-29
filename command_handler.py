@@ -24,6 +24,30 @@ emotes = {
     'poggers': 'poggers',
     'residentsleeper': 'residentsleeper',
 }
+roles = {
+    # VRUCI
+    'vive': 444292830328782848,
+    'oculus': 445704725363687434,
+    'psvr': 445708850004361247,
+    # FGUCI
+    'kazusmile': 587729357976502274,
+    'UNIST': 587729356596707338,
+    'BBTAG': 587729518760951829,
+    'UgLi': 604139568375005210,
+    'Cell': 605276310020947999
+}
+emojis = {
+    # VRUCI
+    'vive': 445670052340039700,
+    'oculus': 445670639932669962,
+    'psvr': 445672547456122880,
+    # FGUCI
+    'kazusmile': 604098855658717184,
+    # 'UNIST': 1,
+    # 'BBTAG': 1,
+    'UgLi': 371522399482413057,
+    'Cell': 369561682172968961
+}
 last_emote_time = time.time()
 emote_cooldown = 0
 last_command_time = time.time()
@@ -34,11 +58,11 @@ async def handle_message(message: discord.Message):
     global last_command_time
     client = head.client
     lower_case_message = message.content.lower()
-    if not message.author.bot and message.author.id != "114858490555531268":  # For the special child
+    if not message.author.bot:
         if lower_case_message.startswith('zot zot zot'):
             if time.time() - last_command_time >= command_cooldown:
                 last_command_time = time.time()
-                await client.send_message(message.channel, content='ZOT ZOT ZOT!')
+                await message.channel.send('ZOT ZOT ZOT!')
         elif lower_case_message.startswith('z!'):
             command = lower_case_message[2:].rstrip()  # type: str
             out_message = ''
@@ -129,16 +153,30 @@ async def handle_message(message: discord.Message):
                 else:
                     out_message = "ERROR: Could not find user."
             if out_message != '':
-                await client.send_message(message.channel, content=out_message)
+                await message.channel.send(content=out_message)
         global last_emote_time
         if time.time() - last_emote_time >= emote_cooldown:
             for emote in emotes:  # type: str
-                if re.search('(?<!:)' + emotes.get(emote).lower() + '(?!:)', lower_case_message) and not re.search(':.*:', lower_case_message):
+                if re.search('(?<!:)' + emotes.get(emote).lower() + '(?!:)', lower_case_message) and not re.search(
+                        ':.*:', lower_case_message):
                     try:
-                        await head.client.add_reaction(message, discord.utils.get(head.client.get_all_emojis(), name=emote))
+                        await head.client.add_reaction(message,
+                                                       discord.utils.get(head.client.get_all_emojis(), name=emote))
                     finally:
                         pass
                     last_emote_time = time.time()
+
+
+async def handle_emote_add(reaction: discord.RawReactionActionEvent):
+    if reaction.user_id != head.client.user.id and (reaction.message_id == 445660909696974859 or reaction.message_id == 604100765883039784):
+        await botutils.get_server_by_id(reaction.guild_id).get_member(reaction.user_id).add_roles(
+            botutils.get_server_by_id(reaction.guild_id).get_role(roles[reaction.emoji.name]))
+
+
+async def handle_emote_remove(reaction: discord.RawReactionActionEvent):
+    if reaction.user_id != head.client.user.id and (reaction.message_id == 445660909696974859 or reaction.message_id == 604100765883039784):
+        await botutils.get_server_by_id(reaction.guild_id).get_member(reaction.user_id).remove_roles(
+            botutils.get_server_by_id(reaction.guild_id).get_role(roles[reaction.emoji.name]))
 
 
 async def check_playing(message: discord.Message):
@@ -193,7 +231,7 @@ async def warn(message: discord.Message):
             embed.add_field(name="Moderator", value=moderator.display_name + "#" + str(moderator.discriminator),
                             inline=False)
             embed.add_field(name="Reason", value=reason, inline=False)
-            await head.client.send_message(target, embed=embed)
+            await target.send(embed=embed)
             await head.client.send_message(target,
                                            content="You will be banned on your second warning. If this warning was given in error, please contact the moderator.")
             # Embed WARN message for #mod-log
@@ -202,7 +240,7 @@ async def warn(message: discord.Message):
                             inline=False)
             embed.add_field(name="User", value=target.name + "#" + str(target.discriminator), inline=False)
             embed.add_field(name="Reason", value=reason, inline=False)
-            await head.client.send_message(botutils.get_chan_by_id("342545356531302413"), embed=embed)
+            await botutils.get_textchan_by_id("342545356531302413").send(embed=embed)
             out_message = "Successfully warned " + target.display_name
         else:
             await head.client.kick(target)
@@ -211,11 +249,11 @@ async def warn(message: discord.Message):
                             inline=False)
             embed.add_field(name="User", value=target.name + "#" + str(target.discriminator), inline=False)
             embed.add_field(name="Reason", value=reason, inline=False)
-            await head.client.send_message(botutils.get_chan_by_id("342545356531302413"), embed=embed)
+            await botutils.get_textchan_by_id("342545356531302413").send(embed=embed)
             out_message = "User " + target.display_name + " kicked."
     else:
         out_message = "ERROR: Please input a user to warn."
-    await head.client.send_message(message.channel, content=out_message)
+    await message.channel.send(content=out_message)
 
 
 async def unwarn(message: discord.Message):
@@ -229,7 +267,7 @@ async def unwarn(message: discord.Message):
             out_message = "ERROR: User does not have a warning."
     else:
         out_message = "ERROR: Please input a user to unwarn."
-    await head.client.send_message(message.channel, out_message)
+    await message.channel.send(out_message)
 
 
 async def report(message: discord.Message):
@@ -247,11 +285,24 @@ async def report(message: discord.Message):
             embed.add_field(name="Reporter", value=author.name + "#" + str(author.discriminator), inline=False)
             embed.add_field(name="User", value=target.name + "#" + str(target.discriminator), inline=False)
             embed.add_field(name="Reason", value=reason, inline=False)
-            await head.client.send_message(botutils.get_chan_by_id("342545356531302413"),
+            await head.client.send_message(botutils.get_textchan_by_id("342545356531302413"),
                                            content="<@&342539333015699457>")
-            await head.client.send_message(botutils.get_chan_by_id("342545356531302413"), embed=embed)
+            await botutils.get_textchan_by_id("342545356531302413").send(embed=embed)
             await head.client.send_message(author,
                                            content="Report successfully submitted for user " + target.display_name + "#" + target.discriminator + ", thank you for your help!")
     else:
-        await head.client.send_message(author, "ERROR: Please input a person to report! (Ex: z!report [user] [reason])")
+        await author.send("ERROR: Please input a person to report! (Ex: z!report [user] [reason])")
     await head.client.delete_message(message)
+
+
+async def add_emojis_to_msgs():
+    fg = await botutils.get_fguci_msg()
+    vr = await botutils.get_vruci_msg()
+    await fg.add_reaction(botutils.get_emoji_by_id(emojis['kazusmile']))
+    await fg.add_reaction(botutils.get_emoji_by_id(emojis['UgLi']))
+    await fg.add_reaction(botutils.get_emoji_by_id(emojis['Cell']))
+    # await fg.add_reaction(botutils.get_emoji_by_id(emojis['kazusmile']))
+    # await fg.add_reaction(botutils.get_emoji_by_id(emojis['kazusmile']))
+    await vr.add_reaction(botutils.get_emoji_by_id(emojis['vive']))
+    await vr.add_reaction(botutils.get_emoji_by_id(emojis['oculus']))
+    await vr.add_reaction(botutils.get_emoji_by_id(emojis['psvr']))

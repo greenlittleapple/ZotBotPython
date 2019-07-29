@@ -7,7 +7,6 @@ import botutils
 import reddit_handler
 
 if __name__ == '__main__':
-
     @head.client.event
     async def on_ready():
         botutils.write_to_log('Logged in to Discord')
@@ -15,10 +14,22 @@ if __name__ == '__main__':
         print(head.client.user.name)
         print(head.client.user.id)
         print('------')
-        reddit_handler.start_retrieve_UCI(True)
+        await command_handler.add_emojis_to_msgs()
+        # reddit_handler.start_retrieve_UCI(True)
+
 
     @head.client.event
     async def on_message(message: discord.Message):
         await command_handler.handle_message(message)
+
+
+    @head.client.event
+    async def on_raw_reaction_add(r: discord.RawReactionActionEvent):
+        await command_handler.handle_emote_add(r)
+
+    @head.client.event
+    async def on_raw_reaction_remove(r: discord.RawReactionActionEvent):
+        await command_handler.handle_emote_remove(r)
+
 
     head.client.run(head.token)

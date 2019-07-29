@@ -20,15 +20,30 @@ def is_mod(user: discord.Member) -> bool:
 
 # noinspection PyPep8Naming
 def get_UCI() -> discord.Guild:
-    return head.client.get_server('341464294132678668')
+    return head.client.get_guild(341464294132678668)
 
 
-def get_role_by_id(id: str, server: discord.Guild) -> discord.Role:
-    return discord.utils.get(server.roles, id=id)
+def get_emoji_by_id(id: int) -> discord.Emoji:
+    return head.client.get_emoji(id)
+
+def get_server_by_id(id: int) -> discord.Guild:
+    return head.client.get_guild(id)
 
 
-def get_chan_by_id(id: str) -> discord.channel:
-    return head.client.get_channel(id=id)
+def get_role_by_id(id: int, server: discord.Guild) -> discord.Role:
+    return server.get_role(id)
+
+
+def get_textchan_by_id(id: int) -> discord.TextChannel:
+    return head.client.get_channel(id)
+
+
+async def get_fguci_msg() -> discord.Message:
+    return await get_textchan_by_id(604095840025575435).fetch_message(604100765883039784)
+
+
+async def get_vruci_msg() -> discord.Message:
+    return await get_textchan_by_id(444291846555041797).fetch_message(445660909696974859)
 
 
 def find_user(term: str, server: discord.Guild) -> discord.User or None:

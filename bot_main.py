@@ -1,6 +1,7 @@
 # Written by greenlittleapple (Marcus Wong)
 
 import discord
+from discord.ext import commands
 import head
 import command_handler
 import botutils
@@ -27,9 +28,11 @@ if __name__ == '__main__':
     async def on_raw_reaction_add(r: discord.RawReactionActionEvent):
         await command_handler.handle_emote_add(r)
 
+
     @head.client.event
     async def on_raw_reaction_remove(r: discord.RawReactionActionEvent):
         await command_handler.handle_emote_remove(r)
 
 
     head.client.run(head.token)
+    # head.client.run(head.self_token, bot=False)

@@ -18,13 +18,22 @@ def is_mod(user: discord.Member) -> bool:
     return user.server_permissions.administrator
 
 
+async def react_to_msg(msg: discord.Message, emoji: str):
+    await msg.add_reaction(get_emoji(emoji))
+
+
 # noinspection PyPep8Naming
 def get_UCI() -> discord.Guild:
     return head.client.get_guild(341464294132678668)
 
 
+def get_emoji(name: str) -> discord.Emoji:
+    return get_emoji_by_id(head.emotes[name])
+
+
 def get_emoji_by_id(id: int) -> discord.Emoji:
     return head.client.get_emoji(id)
+
 
 def get_server_by_id(id: int) -> discord.Guild:
     return head.client.get_guild(id)

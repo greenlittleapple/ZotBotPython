@@ -11,43 +11,6 @@ import os, random
 import pickle
 
 noPerm = "ERROR: You do not have permission to use this command."
-emotes = {
-    'kappa': 'kappa',
-    'babyrage': 'babyrage',
-    'dansgame': 'dansgame',
-    'feelsbadman': 'feels *bad',
-    'feelsgoodman': 'feels *good',
-    'gachigasm': 'gachigasm',
-    'keepo': 'keepo',
-    'peterS': 'monkas',
-    'pogchamp': 'pogchamp',
-    'poggers': 'poggers',
-    'residentsleeper': 'residentsleeper',
-}
-roles = {
-    # VRUCI
-    'vive': 444292830328782848,
-    'oculus': 445704725363687434,
-    'psvr': 445708850004361247,
-    # FGUCI
-    'kazusmile': 587729357976502274,
-    'UNIST': 587729356596707338,
-    'BBTAG': 587729518760951829,
-    'UgLi': 604139568375005210,
-    'Cell': 605276310020947999
-}
-emojis = {
-    # VRUCI
-    'vive': 445670052340039700,
-    'oculus': 445670639932669962,
-    'psvr': 445672547456122880,
-    # FGUCI
-    'kazusmile': 604098855658717184,
-    # 'UNIST': 1,
-    # 'BBTAG': 1,
-    'UgLi': 371522399482413057,
-    'Cell': 369561682172968961
-}
 last_emote_time = time.time()
 emote_cooldown = 0
 last_command_time = time.time()
@@ -154,29 +117,29 @@ async def handle_message(message: discord.Message):
                     out_message = "ERROR: Could not find user."
             if out_message != '':
                 await message.channel.send(content=out_message)
-        global last_emote_time
-        if time.time() - last_emote_time >= emote_cooldown:
-            for emote in emotes:  # type: str
-                if re.search('(?<!:)' + emotes.get(emote).lower() + '(?!:)', lower_case_message) and not re.search(
-                        ':.*:', lower_case_message):
-                    try:
-                        await head.client.add_reaction(message,
-                                                       discord.utils.get(head.client.get_all_emojis(), name=emote))
-                    finally:
-                        pass
-                    last_emote_time = time.time()
+        # global last_emote_time
+        # if time.time() - last_emote_time >= emote_cooldown:
+        #     for emote in head.emotes:  # type: str
+        #         if re.search('(?<!:)' + head.emotes.get(emote).lower() + '(?!:)', lower_case_message) and not re.search(
+        #                 ':.*:', lower_case_message):
+        #             try:
+        #                 await head.client.add_reaction(message,
+        #                                                discord.utils.get(head.client.get_all_emojis(), name=emote))
+        #             finally:
+        #                 pass
+        #             last_emote_time = time.time()
 
 
 async def handle_emote_add(reaction: discord.RawReactionActionEvent):
     if reaction.user_id != head.client.user.id and (reaction.message_id == 445660909696974859 or reaction.message_id == 604100765883039784):
         await botutils.get_server_by_id(reaction.guild_id).get_member(reaction.user_id).add_roles(
-            botutils.get_server_by_id(reaction.guild_id).get_role(roles[reaction.emoji.name]))
+            botutils.get_server_by_id(reaction.guild_id).get_role(head.roles[reaction.emoji.name]))
 
 
 async def handle_emote_remove(reaction: discord.RawReactionActionEvent):
     if reaction.user_id != head.client.user.id and (reaction.message_id == 445660909696974859 or reaction.message_id == 604100765883039784):
         await botutils.get_server_by_id(reaction.guild_id).get_member(reaction.user_id).remove_roles(
-            botutils.get_server_by_id(reaction.guild_id).get_role(roles[reaction.emoji.name]))
+            botutils.get_server_by_id(reaction.guild_id).get_role(head.roles[reaction.emoji.name]))
 
 
 async def check_playing(message: discord.Message):
@@ -298,11 +261,11 @@ async def report(message: discord.Message):
 async def add_emojis_to_msgs():
     fg = await botutils.get_fguci_msg()
     vr = await botutils.get_vruci_msg()
-    await fg.add_reaction(botutils.get_emoji_by_id(emojis['kazusmile']))
-    await fg.add_reaction(botutils.get_emoji_by_id(emojis['UgLi']))
-    await fg.add_reaction(botutils.get_emoji_by_id(emojis['Cell']))
-    # await fg.add_reaction(botutils.get_emoji_by_id(emojis['kazusmile']))
-    # await fg.add_reaction(botutils.get_emoji_by_id(emojis['kazusmile']))
-    await vr.add_reaction(botutils.get_emoji_by_id(emojis['vive']))
-    await vr.add_reaction(botutils.get_emoji_by_id(emojis['oculus']))
-    await vr.add_reaction(botutils.get_emoji_by_id(emojis['psvr']))
+    await fg.add_reaction(botutils.get_emoji_by_id(head.emotes['kazusmile']))
+    await fg.add_reaction(botutils.get_emoji_by_id(head.emotes['UgLi']))
+    await fg.add_reaction(botutils.get_emoji_by_id(head.emotes['Cell']))
+    await fg.add_reaction(botutils.get_emoji_by_id(head.emotes['bbtank']))
+    # await fg.add_reaction(botutils.get_emoji_by_id(head.emotes['kazusmile']))
+    await vr.add_reaction(botutils.get_emoji_by_id(head.emotes['vive']))
+    await vr.add_reaction(botutils.get_emoji_by_id(head.emotes['oculus']))
+    await vr.add_reaction(botutils.get_emoji_by_id(head.emotes['psvr']))
